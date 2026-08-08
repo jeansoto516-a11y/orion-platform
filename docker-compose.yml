@@ -1,0 +1,58 @@
+services:
+  db:
+    image: postgres:18
+    container_name: orion-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: orion_db
+      POSTGRES_USER: orion_user
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    ports:
+      - "5433:5432"
+    volumes:
+      - orion_pgdata:/var/lib/postgresql
+    networks:
+      - orion-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U orion_user -d orion_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: ./backend/orion-backend
+    container_name: orion-api
+    restart: unless-stopped
+    environment:
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+      DATABASE_NAME: orion_db
+      DATABASE_USER: orion_user
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+    ports:
+      - "8081:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - orion-net
+
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #   container_name: orion-frontend
+  #   ports:
+  #     - "3000:80"
+  #   depends_on:
+  #     - api
+  #   networks:
+  #     - orion-net
+
+networks:
+  orion-net:
+    driver: bridge
+
+volumes:
+  orion_pgdata:
