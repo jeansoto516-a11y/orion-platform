@@ -1,0 +1,48 @@
+<div class="container">
+    <h1>Usuários — ORION Platform</h1>
+
+    <form (ngSubmit)="addUser()" class="user-form">
+    <input
+        type="text"
+        [(ngModel)]="newUser.name"
+        name="name"
+        placeholder="Nome"
+        required
+    />
+    <input
+        type="email"
+        [(ngModel)]="newUser.email"
+        name="email"
+        placeholder="Email"
+        required
+    />
+    <button type="submit">Cadastrar</button>
+    </form>
+
+    @if (errorMessage) {
+    <p class="error">{{ errorMessage }}</p>
+    }
+
+    @if (loading) {
+    <p>Carregando...</p>
+    } @else {
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Email</th>
+        </tr>
+        </thead>
+        <tbody>
+        @for (user of users; track user.id) {
+            <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    }
+</div>
