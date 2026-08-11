@@ -39,16 +39,17 @@ services:
     networks:
       - orion-net
 
-  # frontend:
-  #   build:
-  #     context: ./frontend
-  #   container_name: orion-frontend
-  #   ports:
-  #     - "3000:80"
-  #   depends_on:
-  #     - api
-  #   networks:
-  #     - orion-net
+  frontend:
+    build:
+      context: ./frontend
+    container_name: orion-frontend
+    restart: unless-stopped
+    ports:
+      - "4200:80"
+    depends_on:
+      - api
+    networks:
+      - orion-net
 
 networks:
   orion-net:
