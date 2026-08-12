@@ -19,11 +19,11 @@
     <button type="submit">Cadastrar</button>
     </form>
 
-    @if (errorMessage) {
-    <p class="error">{{ errorMessage }}</p>
+    @if (errorMessage()) {
+    <p class="error">{{ errorMessage() }}</p>
     }
 
-    @if (loading) {
+    @if (loading()) {
     <p>Carregando...</p>
     } @else {
     <table>
@@ -35,7 +35,7 @@
         </tr>
         </thead>
         <tbody>
-        @for (user of users; track user.id) {
+        @for (user of users(); track user.id) {
             <tr>
             <td>{{ user.id }}</td>
             <td>{{ user.name }}</td>

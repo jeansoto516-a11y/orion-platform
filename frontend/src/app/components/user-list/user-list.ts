@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { User } from '../../models/user';
@@ -12,10 +12,10 @@ import { UserService } from '../../services/user';
   styleUrl: './user-list.scss'
 })
 export class UserList implements OnInit {
-  users: User[] = [];
+  users = signal<User[]>([]);
   newUser: User = { name: '', email: '' };
-  loading = false;
-  errorMessage = '';
+  loading = signal(false);
+  errorMessage = signal('');
 
   constructor(private userService: UserService) {}
 
@@ -24,15 +24,15 @@ export class UserList implements OnInit {
   }
 
   loadUsers(): void {
-    this.loading = true;
+    this.loading.set(true);
     this.userService.getUsers().subscribe({
       next: (data) => {
-        this.users = data;
-        this.loading = false;
+        this.users.set(data);
+        this.loading.set(false);
       },
       error: (err) => {
-        this.errorMessage = 'Erro ao carregar usuários. Verifique se a API está rodando.';
-        this.loading = false;
+        this.errorMessage.set('Erro ao carregar usuários. Verifique se a API está rodando.');
+        this.loading.set(false);
         console.error(err);
       }
     });
@@ -48,7 +48,7 @@ export class UserList implements OnInit {
         this.loadUsers();
       },
       error: (err) => {
-        this.errorMessage = 'Erro ao cadastrar usuário.';
+        this.errorMessage.set('Erro ao cadastrar usuário.');
         console.error(err);
       }
     });
