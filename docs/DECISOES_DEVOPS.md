@@ -35,3 +35,11 @@ Modelo `main → develop → feature/* → hotfix/*`, documentado em `CONTRIBUTI
 - Pipeline de CI/CD (GitHub Actions) ainda não implementada
 - Infraestrutura como código (Terraform) ainda não implementada
 - Alertas automáticos de indisponibilidade não implementados (dependem de uma ferramenta de observabilidade externa conectada aos logs/métricas já expostos)
+
+## Infraestrutura como Codigo (Terraform)
+
+Como o projeto nao possui conta em provedor de nuvem (AWS/Azure/GCP), a infraestrutura como codigo foi implementada usando o provider Docker do Terraform (kreuzwerker/docker), gerenciando os mesmos recursos do docker-compose (rede, volume, containers) de forma declarativa e versionada, em infra/terraform/.
+
+Essa e uma adaptacao pratica do item de escopo original (criar VM ou servico equivalente via Terraform) para a realidade do ambiente disponivel. A migracao para um provider de nuvem real (aws, azurerm, google) seria a evolucao natural do projeto, reaproveitando a mesma estrutura de variaveis e outputs ja definida.
+
+Validado com sucesso via terraform init, terraform plan e terraform apply (banco de dados e API criados e funcionais). O build da imagem do frontend demonstrou ser sensivel a memoria RAM alocada ao Docker Desktop; em ambientes com poucos recursos, recomenda-se aumentar a alocacao de memoria antes de rodar terraform apply com multiplas imagens em paralelo.
