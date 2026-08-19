@@ -1,40 +1,40 @@
-Ôªø# Decis√µes T√©cnicas de DevOps ‚Äî ORION Platform
+# Decisıes TÈcnicas de DevOps ó ORION Platform
 
-## Containeriza√ß√£o
+## ContainerizaÁ„o
 
-**Build multi-stage para backend e frontend.** Tanto a API (Java) quanto o frontend (Angular) usam Dockerfiles com duas etapas: uma para compilar/buildar, outra apenas para executar. Isso reduz drasticamente o tamanho final das imagens, j√° que ferramentas de build (Maven, Node) n√£o v√£o para a imagem de produ√ß√£o.
+**Build multi-stage para backend e frontend.** Tanto a API (Java) quanto o frontend (Angular) usam Dockerfiles com duas etapas: uma para compilar/buildar, outra apenas para executar. Isso reduz drasticamente o tamanho final das imagens, j· que ferramentas de build (Maven, Node) n„o v„o para a imagem de produÁ„o.
 
-**Nginx para servir o frontend.** Em vez de manter um servidor Node.js rodando em produ√ß√£o s√≥ para servir arquivos est√°ticos, o frontend compilado √© entregue por Nginx ‚Äî mais leve e mais adequado para esse tipo de carga.
+**Nginx para servir o frontend.** Em vez de manter um servidor Node.js rodando em produÁ„o sÛ para servir arquivos est·ticos, o frontend compilado È entregue por Nginx ó mais leve e mais adequado para esse tipo de carga.
 
-**SSR (Server-Side Rendering) desativado no Angular.** O projeto foi gerado inicialmente com SSR habilitado por padr√£o (novidade do Angular 21), mas essa caracter√≠stica √© voltada para SEO/performance de sites p√∫blicos ‚Äî desnecess√°ria para um painel interno de CRUD. Foi removido para simplificar o projeto e evitar problemas de hidrata√ß√£o client-side.
+**SSR (Server-Side Rendering) desativado no Angular.** O projeto foi gerado inicialmente com SSR habilitado por padr„o (novidade do Angular 21), mas essa caracterÌstica È voltada para SEO/performance de sites p˙blicos ó desnecess·ria para um painel interno de CRUD. Foi removido para simplificar o projeto e evitar problemas de hidrataÁ„o client-side.
 
-## Rede e comunica√ß√£o entre servi√ßos
+## Rede e comunicaÁ„o entre serviÁos
 
-Os servi√ßos (API, banco, frontend) compartilham uma rede Docker interna (`orion-net`). A API se conecta ao banco pelo nome do servi√ßo (`db`), n√£o por IP fixo ou `localhost` ‚Äî essa √© a pr√°tica recomendada em ambientes Docker Compose, pois o nome do servi√ßo √© resolvido automaticamente pela rede interna do Docker.
+Os serviÁos (API, banco, frontend) compartilham uma rede Docker interna (`orion-net`). A API se conecta ao banco pelo nome do serviÁo (`db`), n„o por IP fixo ou `localhost` ó essa È a pr·tica recomendada em ambientes Docker Compose, pois o nome do serviÁo È resolvido automaticamente pela rede interna do Docker.
 
-## Persist√™ncia de dados
+## PersistÍncia de dados
 
-O PostgreSQL 18 usa um volume Docker nomeado (`orion_pgdata`) montado em `/var/lib/postgresql` (n√£o em `/var/lib/postgresql/data`, que era o padr√£o em vers√µes anteriores ‚Äî a partir da vers√£o 18, a imagem oficial do Postgres reorganiza os dados em subpastas por vers√£o).
+O PostgreSQL 18 usa um volume Docker nomeado (`orion_pgdata`) montado em `/var/lib/postgresql` (n„o em `/var/lib/postgresql/data`, que era o padr„o em versıes anteriores ó a partir da vers„o 18, a imagem oficial do Postgres reorganiza os dados em subpastas por vers„o).
 
-## Configura√ß√£o e segredos
+## ConfiguraÁ„o e segredos
 
-Nenhuma credencial (senha de banco, chave JWT) est√° no c√≥digo-fonte. Todas s√£o lidas via vari√°veis de ambiente, com valores reais mantidos em um `.env` (ignorado pelo Git) e documentados em `.env.example` (sem valores reais, apenas os nomes das vari√°veis esperadas).
+Nenhuma credencial (senha de banco, chave JWT) est· no cÛdigo-fonte. Todas s„o lidas via vari·veis de ambiente, com valores reais mantidos em um `.env` (ignorado pelo Git) e documentados em `.env.example` (sem valores reais, apenas os nomes das vari·veis esperadas).
 
 ## Monitoramento
 
-**Spring Boot Actuator** foi escolhido para o health check (`/actuator/health`) por ser a solu√ß√£o nativa e oficial do framework, evitando reinventar essa funcionalidade manualmente. Ele reporta tanto o status geral da aplica√ß√£o quanto o status da conex√£o com o banco de dados.
+**Spring Boot Actuator** foi escolhido para o health check (`/actuator/health`) por ser a soluÁ„o nativa e oficial do framework, evitando reinventar essa funcionalidade manualmente. Ele reporta tanto o status geral da aplicaÁ„o quanto o status da conex„o com o banco de dados.
 
-**Logs estruturados em formato ECS (Elastic Common Schema)**, via recurso nativo do Spring Boot (`logging.structured.format.console=ecs`), sem necessidade de bibliotecas adicionais. Esse formato √© amplamente reconhecido por ferramentas de observabilidade (ELK, Grafana Loki, Datadog), facilitando uma futura integra√ß√£o.
+**Logs estruturados em formato ECS (Elastic Common Schema)**, via recurso nativo do Spring Boot (`logging.structured.format.console=ecs`), sem necessidade de bibliotecas adicionais. Esse formato È amplamente reconhecido por ferramentas de observabilidade (ELK, Grafana Loki, Datadog), facilitando uma futura integraÁ„o.
 
-## Estrat√©gia de branches
+## EstratÈgia de branches
 
-Modelo `main ‚Üí develop ‚Üí feature/* ‚Üí hotfix/*`, documentado em `CONTRIBUTING.md`. A prote√ß√£o da branch `main` (Pull Request obrigat√≥rio) foi configurada inicialmente, mas posteriormente desativada por decis√£o de fluxo de trabalho do time ‚Äî ponto em aberto para reavalia√ß√£o futura, caso o crit√©rio de aceite do escopo original precise ser cumprido integralmente.
+Modelo `main ? develop ? feature/* ? hotfix/*`, documentado em `CONTRIBUTING.md`. A proteÁ„o da branch `main` (Pull Request obrigatÛrio) foi configurada inicialmente, mas posteriormente desativada por decis„o de fluxo de trabalho do time ó ponto em aberto para reavaliaÁ„o futura, caso o critÈrio de aceite do escopo original precise ser cumprido integralmente.
 
-## Pend√™ncias conhecidas
+## PendÍncias conhecidas
 
-- Pipeline de CI/CD (GitHub Actions) ainda n√£o implementada
-- Infraestrutura como c√≥digo (Terraform) ainda n√£o implementada
-- Alertas autom√°ticos de indisponibilidade n√£o implementados (dependem de uma ferramenta de observabilidade externa conectada aos logs/m√©tricas j√° expostos)
+- Pipeline de CI/CD (GitHub Actions) ainda n„o implementada
+
+- Alertas autom·ticos de indisponibilidade n„o implementados (dependem de uma ferramenta de observabilidade externa conectada aos logs/mÈtricas j· expostos)
 
 ## Infraestrutura como Codigo (Terraform)
 
