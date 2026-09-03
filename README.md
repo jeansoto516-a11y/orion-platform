@@ -70,16 +70,16 @@ Os logs da aplicação são emitidos em formato estruturado JSON (ECS), prontos 
 
 ## Status do projeto
 
-Este projeto está em desenvolvimento ativo, seguindo um escopo de entrega DevOps completo:
+Este projeto está finalizado e seguindo um escopo de entrega DevOps completo:
 
 - [x] Containerização com Docker (API + banco)
-- [ ] Containerização do frontend
+- [x] Containerização do frontend
 - [x] Estratégia de configuração (`.env.example`)
-- [ ] Pipeline CI/CD (GitHub Actions)
-- [ ] Infraestrutura como código (Terraform)
+- [x] Pipeline CI/CD (GitHub Actions)
+- [x] Infraestrutura como código (Terraform)
 - [x] Monitoramento básico (`/actuator/health` + logs estruturados)
-- [ ] Estratégia de branches Git
-- [ ] Documentação técnica completa (arquitetura, manual de execução, decisões DevOps)
+- [x] Estratégia de branches Git
+- [x] Documentação técnica completa (arquitetura, manual de execução, decisões DevOps)
 
 ## Licença
 
